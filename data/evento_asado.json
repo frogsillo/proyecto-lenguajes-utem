@@ -1,0 +1,13 @@
+{
+  "nombre_evento": "Gran Asado Inauguración UTEM",
+  "comensales": {
+    "adultos": 10,
+    "ninos": 4,
+    "vegetarianos": 2
+  },
+  "preferencias": {
+    "incluir_alcohol": false,
+    "tipo_corte_preferido": "prod_01"
+  },
+  "presupuesto_maximo": 120000
+}

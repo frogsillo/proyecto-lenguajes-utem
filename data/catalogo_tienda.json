@@ -1,0 +1,78 @@
+{
+  "tienda": "Parrilleros UTEM - Tienda Oficial",
+  "moneda": "CLP",
+  "productos": [
+    {
+      "id": "prod_01",
+      "nombre": "Lomo Vetado Vacuno",
+      "categoria": "carnico",
+      "precio": 14990,
+      "unidad": "kg",
+      "stock": 3.0,
+      "sustituto_id": "prod_02"
+    },
+    {
+      "id": "prod_02",
+      "nombre": "Sobrecostilla Vacuno",
+      "categoria": "carnico",
+      "precio": 9990,
+      "unidad": "kg",
+      "stock": 15.0,
+      "sustituto_id": null
+    },
+    {
+      "id": "prod_03",
+      "nombre": "Chorizo Parrillero Artesanal",
+      "categoria": "carnico",
+      "precio": 4990,
+      "unidad": "pack",
+      "stock": 20.0,
+      "sustituto_id": null
+    },
+    {
+      "id": "prod_04",
+      "nombre": "Hamburguesa de Lentejas / Garbanzos",
+      "categoria": "vegetariano",
+      "precio": 3990,
+      "unidad": "pack",
+      "stock": 10.0,
+      "sustituto_id": null
+    },
+    {
+      "id": "prod_05",
+      "nombre": "Pimiento Morrón Rojo",
+      "categoria": "vegetariano",
+      "precio": 1200,
+      "unidad": "unidad",
+      "stock": 30.0,
+      "sustituto_id": null
+    },
+    {
+      "id": "prod_06",
+      "nombre": "Carbón Vegetal Espino 2.5kg",
+      "categoria": "abarrote",
+      "precio": 3500,
+      "unidad": "bolsa",
+      "stock": 12.0,
+      "sustituto_id": null
+    },
+    {
+      "id": "prod_07",
+      "nombre": "Sal Parrillera Gruesa 1kg",
+      "categoria": "abarrote",
+      "precio": 1500,
+      "unidad": "bolsa",
+      "stock": 25.0,
+      "sustituto_id": null
+    },
+    {
+      "id": "prod_08",
+      "nombre": "Bebida Gaseosa 2.5L",
+      "categoria": "bebida",
+      "precio": 2500,
+      "unidad": "botella",
+      "stock": 18.0,
+      "sustituto_id": null
+    }
+  ]
+}

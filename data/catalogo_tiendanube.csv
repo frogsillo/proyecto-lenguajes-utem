@@ -1,0 +1,9 @@
+Identificador de URL,Nombre,Categoría,Precio,Precio promocional,Peso,Stock,SKU,Código de barras,Mostrar en tienda,Descripción,Tags
+lomo-vetado-vacuno,Lomo Vetado Vacuno,Carnes,14990,,1.0,3,prod_01,,SI,"Corte premium de vacuno seleccionado, ideal para parrilla. Presentación por kilogramo.",asado;vacuno;premium
+sobrecostilla-vacuno,Sobrecostilla Vacuno,Carnes,9990,,1.0,15,prod_02,,SI,"Corte parrillero tradicional de vacuno, jugoso y rendidor. Presentación por kilogramo.",asado;vacuno;tradicional
+chorizo-parrillero,Chorizo Parrillero Artesanal,Carnes,4990,,0.5,20,prod_03,,SI,"Pack de 5 unidades de chorizo parrillero artesanal con receta tradicional.",asado;embutidos;choripan
+hamburguesa-lentejas,Hamburguesa de Lentejas / Garbanzos,Vegetariano,3990,,0.4,10,prod_04,,SI,"Pack de 4 hamburguesas artesanales de legumbres para comensales vegetarianos.",vegetariano;sin-carne
+pimiento-morron,Pimiento Morrón Rojo,Vegetariano,1200,,0.2,30,prod_05,,SI,"Pimiento morrón rojo fresco de primera selección, ideal para asar a las brasas.",vegetariano;verdura;parrilla
+carbon-vegetal-2-5kg,Carbón Vegetal Espino 2.5kg,Abarrotes,3500,,2.5,12,prod_06,,SI,"Bolsa de carbón vegetal de espino de alta duración y poder calórico.",abarrotes;carbon;fuego
+sal-parrillera-1kg,Sal Parrillera Gruesa 1kg,Abarrotes,1500,,1.0,25,prod_07,,SI,"Bolsa de sal gruesa parrillera con granulometría perfecta para cortes a la parrilla.",abarrotes;sal;condimento
+bebida-gaseosa-2-5l,Bebida Gaseosa 2.5L,Bebidas,2500,,2.5,18,prod_08,,SI,"Botella de bebida gaseosa de 2.5 litros, variedad cola o fantasía.",bebidas;refresco
