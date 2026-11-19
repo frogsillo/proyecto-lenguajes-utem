@@ -2,13 +2,16 @@ import os
 import re
 
 REPO_DIR = '/home/frog/.gemini/antigravity/scratch/proyecto_lenguajes'
-MD_PATH = os.path.join(REPO_DIR, 'docs/INFORME_FINAL_UTEM.md')
-HTML_PATH = os.path.join(REPO_DIR, 'docs/INFORME_FINAL_UTEM.html')
+MD_PATH = os.path.join(REPO_DIR, 'INFORME_FINAL_LISTO.md')
+HTML_PATHS = [
+    os.path.join(REPO_DIR, 'INFORME_FINAL_LISTO.html'),
+    os.path.join(REPO_DIR, 'docs/INFORME_FINAL_UTEM.html'),
+    os.path.join(REPO_DIR, 'docs/INFORME_FINAL_LISTO.html')
+]
 
 with open(MD_PATH, 'r', encoding='utf-8') as f:
     md_content = f.read()
 
-# Conversión simple pero estilizada para Microsoft Word y navegadores
 lines = md_content.splitlines()
 html_lines = []
 in_code = False
@@ -44,9 +47,6 @@ html_lines.append("""<!DOCTYPE html>
             padding-bottom: 6px;
             margin-top: 28pt;
             page-break-before: always;
-        }
-        h1.no-break {
-            page-break-before: avoid;
         }
         h2 {
             font-size: 15pt;
@@ -120,14 +120,6 @@ html_lines.append("""<!DOCTYPE html>
             border-top: 1px solid #ced4da;
             margin: 20pt 0;
         }
-        .portada {
-            text-align: center;
-            padding: 40px 0;
-        }
-        .portada h1 {
-            page-break-before: avoid;
-            font-size: 20pt;
-        }
     </style>
 </head>
 <body>
@@ -162,11 +154,9 @@ for line in lines:
     elif line.strip() == "---":
         html_lines.append("<hr>")
     elif line.startswith("|") and line.endswith("|"):
-        # Tabla simple
         parts = [p.strip() for p in line.split("|")[1:-1]]
         if all(re.match(r"^:?-+:?$", p) for p in parts):
-            continue # Fila separadora
-        is_header = len(html_lines) > 0 and "<table>" not in html_lines[-1] and "<tr>" not in html_lines[-1]
+            continue
         if "<table" not in html_lines[-1] and "<tr" not in html_lines[-1]:
             html_lines.append("<table>")
             html_lines.append("<tr>" + "".join(f"<th>{escape_html(p)}</th>" for p in parts) + "</tr>")
@@ -176,7 +166,6 @@ for line in lines:
         if html_lines and html_lines[-1].startswith("<tr"):
             html_lines.append("</table>")
         if line.strip():
-            # Párrafo normal con código inline
             l = escape_html(line)
             l = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", l)
             l = re.sub(r"\*(.*?)\*", r"<em>\1</em>", l)
@@ -191,8 +180,8 @@ if html_lines and html_lines[-1].startswith("<tr"):
 
 html_lines.append("</body></html>")
 
-with open(HTML_PATH, 'w', encoding='utf-8') as f:
-    f.write("\n".join(html_lines))
-
-print(f"Informe HTML para Word generado en: {HTML_PATH}")
-print(f"Total caracteres HTML: {len(html_lines):,}")
+html_full_text = "\n".join(html_lines)
+for p in HTML_PATHS:
+    with open(p, 'w', encoding='utf-8') as f:
+        f.write(html_full_text)
+    print(f"HTML generado en: {p}")

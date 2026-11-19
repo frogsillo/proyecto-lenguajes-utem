@@ -98,26 +98,25 @@ class TestEquivalenciaMultiparadigma(unittest.TestCase):
             self.assertEqual(item_sobrecostilla["cantidad"], 1.1, f"Sobrecostilla en {nombre_vers} debe cubrir 1.1 kg faltantes")
 
     def test_paridad_optimizacion_activa_presupuesto(self):
-        """Verifica que los tres paradigmas apliquen la misma optimización activa ante restricción presupuestaria."""
-        evento_ajustado = {
-            "nombre_evento": "Asado Ajuste Presupuesto",
-            "comensales": {"adultos": 5, "ninos": 2, "vegetarianos": 1},
-            "preferencias": {
-                "incluir_alcohol": False,
-                "tipo_corte_preferido": "prod_01"
-            },
-            "presupuesto_maximo": 45000.0
-        }
+        """Verifica que los tres paradigmas apliquen la misma optimización activa ante restricción presupuestaria ($45.000)."""
+        import json
+        with open(self.ruta_eve, "r", encoding="utf-8") as f_eve:
+            evento_ajustado = json.load(f_eve)
+        
+        # Asignamos presupuesto ajustado al caso oficial (10 adultos, 4 niños, 2 vegetarianos)
+        evento_ajustado["presupuesto_maximo"] = 45000.0
+        evento_ajustado["nombre_evento"] = "Asado UTEM (Presupuesto Ajustado $45.000)"
+
         b_imp = procesar_carrito_imperativo(self.ruta_cat, evento_input=evento_ajustado)
         b_poo = procesar_carrito_poo(self.ruta_cat, evento_input=evento_ajustado)
         b_fun = procesar_carrito_funcional(self.ruta_cat, evento_input=evento_ajustado)
 
-        # Verificación de que los tres llegaron al mismo total ajustado ($42.104 CLP)
+        # Verificación de que los tres llegaron al mismo total ajustado ($61.884 CLP)
         self.assertEqual(b_imp["total"], b_poo["total"], "Discrepancia en ajuste de presupuesto: Imperativo vs POO")
         self.assertEqual(b_poo["total"], b_fun["total"], "Discrepancia en ajuste de presupuesto: POO vs Funcional")
-        self.assertEqual(b_imp["total"], 42104.0, f"Esperado $42.104 CLP, obtenido {b_imp['total']}")
+        self.assertEqual(b_imp["total"], 61884.0, f"Esperado $61.884 CLP, obtenido {b_imp['total']}")
         
-        # Verificación de que todos registraron ajustes
+        # Verificación de que todos registraron los mismos ajustes aplicados
         self.assertTrue(len(b_imp["ajustes_presupuesto"]) > 0)
         self.assertEqual(len(b_imp["ajustes_presupuesto"]), len(b_poo["ajustes_presupuesto"]))
         self.assertEqual(len(b_poo["ajustes_presupuesto"]), len(b_fun["ajustes_presupuesto"]))

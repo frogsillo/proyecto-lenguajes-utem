@@ -72,7 +72,7 @@ def resolver_carne_con_sustitucion(
 ) -> Tuple[Dict[str, Any], ...]:
     """
     Resuelve funcionalmente la demanda de carne y el quiebre de stock.
-    Retorna una tupla de nuevos ítems sin mutar el catálogo de entrada.
+    Usa exclusivamente tuplas inmutables y concatenación pura (+), sin listas mutables.
     """
     kilos_necesarios = round((adultos * 0.35) + (ninos * 0.15), 2)
     if kilos_necesarios <= 0:
@@ -85,24 +85,26 @@ def resolver_carne_con_sustitucion(
         kilos_cubiertos = stock_disponible
         kilos_faltantes = round(kilos_necesarios - kilos_cubiertos, 2)
         
-        items_res = []
+        items_res: Tuple[Dict[str, Any], ...] = ()
         if kilos_cubiertos > 0:
-            items_res.append(crear_item(
+            item_agotado = crear_item(
                 corte_preferido,
                 kilos_cubiertos,
                 f"Stock agotado. Se utilizaron los {kilos_cubiertos} kg disponibles."
-            ))
+            )
+            items_res = items_res + (item_agotado,)
 
         id_sustituto = corte_preferido.get("sustituto_id")
         sustituto = obtener_producto_por_id(catalogo, id_sustituto)
-        if sustituto:
-            items_res.append(crear_item(
+        if sustituto and kilos_faltantes > 0:
+            item_sustituto = crear_item(
                 sustituto,
                 kilos_faltantes,
                 f"Sustituto activado por falta de stock de {corte_preferido['nombre']}."
-            ))
+            )
+            items_res = items_res + (item_sustituto,)
 
-        return tuple(items_res)
+        return items_res
     else:
         item_preferido = crear_item(corte_preferido, kilos_necesarios, None)
         return (item_preferido,)
@@ -138,22 +140,33 @@ def resolver_insumos(
     kilos_carne: float, 
     total_personas: int
 ) -> Tuple[Dict[str, Any], ...]:
-    """Calcula carbón y sal sin mutación de estado."""
-    items = []
+    """
+    Calcula carbón y sal mediante concatenación pura de tuplas inmutables.
+    Garantiza que la tupla resultante se retorne correctamente incluso para <= 5 personas.
+    """
+    items: Tuple[Dict[str, Any], ...] = ()
     if kilos_carne > 0:
         bolsas_carbon = math.ceil(kilos_carne / 3.0)
         prod_carbon = obtener_producto_por_id(catalogo, "prod_06")
-        items.append(crear_item(
-            prod_carbon, 
-            bolsas_carbon, 
-            f"Calculado según {kilos_carne} kg de carne (1 bolsa cada 3 kg)."
-        ))
+        if prod_carbon:
+            item_carbon = crear_item(
+                prod_carbon, 
+                bolsas_carbon, 
+                f"Calculado según {kilos_carne} kg de carne (1 bolsa cada 3 kg)."
+            )
+            items = items + (item_carbon,)
 
     if total_personas > 5:
         prod_sal = obtener_producto_por_id(catalogo, "prod_07")
-        items.append(crear_item(prod_sal, 1, "Requerido para eventos mayores a 5 personas."))
+        if prod_sal:
+            item_sal = crear_item(
+                prod_sal, 
+                1, 
+                "Requerido para eventos mayores a 5 personas."
+            )
+            items = items + (item_sal,)
     
-    return tuple(items)
+    return items
 
 
 def resolver_bebidas(
@@ -272,12 +285,12 @@ def procesar_carrito_funcional(
         catalogo_inmutable, datos_eve, id_corte_inicial
     )
 
-    ajustes_presupuesto = []
+    ajustes_presupuesto: Tuple[str, ...] = ()
     comensales = datos_eve["comensales"]
     tot_personas = comensales["adultos"] + comensales["ninos"] + comensales["vegetarianos"]
 
     # -------------------------------------------------------------------------
-    # GESTIÓN ACTIVA DE PRESUPUESTO EN EL PARADIGMA FUNCIONAL
+    # GESTIÓN ACTIVA DE PRESUPUESTO EN EL PARADIGMA FUNCIONAL (INMUTABLE)
     # -------------------------------------------------------------------------
     if presupuesto_max and total > presupuesto_max:
         # Intento 1: Degradación pura de corte
@@ -287,7 +300,7 @@ def procesar_carrito_funcional(
             )
             if tot_t < total:
                 items, subtotal, descuento, detalle_prom, total = it_t, sub_t, desc_t, det_t, tot_t
-                ajustes_presupuesto.append("Se degradó el corte de Lomo Vetado ($14.990) a Sobrecostilla ($9.990) para reducir costos.")
+                ajustes_presupuesto = ajustes_presupuesto + ("Se degradó el corte de Lomo Vetado ($14.990) a Sobrecostilla ($9.990) para reducir costos.",)
 
         # Intento 2: Reducción pura de bebidas a 1 botella mínima
         if total > presupuesto_max and tot_personas > 0:
@@ -299,7 +312,7 @@ def procesar_carrito_funcional(
                 )
                 if tot_t < total:
                     items, subtotal, descuento, detalle_prom, total = it_t, sub_t, desc_t, det_t, tot_t
-                    ajustes_presupuesto.append("Se redujeron las bebidas a 1 botella básica para acercarse al presupuesto.")
+                    ajustes_presupuesto = ajustes_presupuesto + ("Se redujeron las bebidas a 1 botella básica para acercarse al presupuesto.",)
 
         # Intento 3: Reducción pura de embutidos a 1 pack esencial
         if total > presupuesto_max and (comensales["adultos"] + comensales["ninos"]) > 0:
@@ -312,7 +325,7 @@ def procesar_carrito_funcional(
                 )
                 if tot_t < total:
                     items, subtotal, descuento, detalle_prom, total = it_t, sub_t, desc_t, det_t, tot_t
-                    ajustes_presupuesto.append("Se redujo el embutido a 1 pack de chorizos para ajustar el gasto.")
+                    ajustes_presupuesto = ajustes_presupuesto + ("Se redujo el embutido a 1 pack de chorizos para ajustar el gasto.",)
 
     alerta_presupuesto = None
     if presupuesto_max and total > presupuesto_max:
@@ -326,7 +339,7 @@ def procesar_carrito_funcional(
         "detalle_descuento": detalle_prom,
         "total": total,
         "presupuesto_maximo": presupuesto_max,
-        "ajustes_presupuesto": ajustes_presupuesto,
+        "ajustes_presupuesto": list(ajustes_presupuesto),
         "alerta_presupuesto": alerta_presupuesto
     }
 
